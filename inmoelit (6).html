@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InmoElite — Plataforma Inmobiliaria</title>
+<style>
+:root{
+  --p:#1B4F72;--p2:#2E86C1;--p3:#AED6F1;
+  --a:#E67E22;--a2:#F39C12;
+  --ok:#27AE60;--err:#E74C3C;
+  --bg:#F0F4F8;--w:#fff;--bg3:#EEF2F7;
+  --txt:#1A252F;--txt2:#5D6D7E;--txt3:#ABB2B9;
+  --bd:#D5D8DC;--r:12px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+img{max-width:100%;}
+a{text-decoration:none;color:inherit;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--p3);border-radius:99px;}
+
+/* ── PANTALLAS ── */
+.pg{display:none;min-height:100vh;}
+.pg.on{display:block;}
+#pg-login.on{display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--p),var(--p2));min-height:100vh;padding:20px;}
+#pg-main.on,#pg-admin.on{display:flex;flex-direction:column;}
+
+/* ── LOGIN ── */
+.login-box{background:var(--w);border-radius:20px;padding:44px 36px;width:100%;max-width:400px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .ic{width:64px;height:64px;background:var(--p);border-radius:16px;
+  display:inline-flex;align-items:center;justify-content:center;font-size:30px;
+  margin-bottom:12px;box-shadow:0 8px 20px rgba(27,79,114,0.4);}
+.login-logo h1{font-size:24px;font-weight:800;color:var(--p);}
+.login-logo p{font-size:13px;color:var(--txt2);margin-top:4px;}
+.fgroup{margin-bottom:16px;}
+.fgroup label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;}
+.finput{width:100%;padding:11px 14px;border:1.5px solid var(--bd);border-radius:var(--rs);
+  font-size:14px;font-family:inherit;color:var(--txt);outline:none;transition:.2s;}
+.finput:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(27,79,114,0.1);}
+.finput.err{border-color:var(--err);}
+.login-err{display:none;background:#FDEDEC;border:1px solid #FADBD8;border-radius:var(--rs);
+  padding:10px 14px;font-size:13px;color:var(--err);margin-bottom:14px;}
+.login-err.on{display:block;}
+.login-hint{text-align:center;margin-top:16px;font-size:12px;color:var(--txt3);line-height:1.6;}
+
+/* ── BOTONES ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px 20px;border-radius:var(--rs);font-size:13.5px;font-weight:600;
+  font-family:inherit;cursor:pointer;border:none;transition:.2s;outline:none;white-space:nowrap;}
+.btn:active{transform:scale(.97);}
+.btn-p{background:var(--p);color:#fff;box-shadow:0 4px 14px rgba(27,79,114,0.3);}
+.btn-p:hover{background:var(--p2);}
+.btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-a{background:var(--a);color:#fff;}.btn-a:hover{background:var(--a2);}
+.btn-ok{background:var(--ok);color:#fff;}
+.btn-err{background:var(--err);color:#fff;}
+.btn-out{background:transparent;color:var(--p);border:1.5px solid var(--p);}
+.btn-out:hover{background:var(--p);color:#fff;}
+.btn-ghost{background:transparent;color:var(--txt2);border:1.5px solid var(--bd);}
+.btn-ghost:hover{border-color:var(--p);color:var(--p);}
+.btn-w{width:100%;}
+.btn-sm{padding:7px 14px;font-size:12.5px;}
+.btn-lg{padding:14px 28px;font-size:15px;}
+
+/* ── NAVBAR ── */
+.navbar{background:var(--w);border-bottom:1px solid var(--bd);
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;height:62px;
+  display:flex;align-items:center;gap:12px;}
+.nav-logo{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0;}
+.nav-logo .nb{width:36px;height:36px;background:var(--p);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:17px;}
+.nav-logo span{font-size:17px;font-weight:800;color:var(--p);}
+.nav-logo em{color:var(--a);font-style:normal;}
+.nav-links{display:flex;gap:2px;flex:1;justify-content:center;}
+.nl{padding:8px 14px;border-radius:var(--rs);font-size:13.5px;font-weight:500;
+  color:var(--txt2);cursor:pointer;border:none;background:none;font-family:inherit;transition:.2s;}
+.nl:hover,.nl.on{color:var(--p);background:var(--bg3);}
+.nav-r{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.flags{display:flex;gap:2px;background:var(--bg3);border-radius:9px;padding:3px;}
+.flag{width:30px;height:26px;border-radius:6px;border:none;background:transparent;
+  cursor:pointer;font-size:16px;transition:.15s;display:flex;align-items:center;justify-content:center;}
+.flag:hover{background:var(--w);transform:scale(1.1);}
+.flag.on{background:var(--w);box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+.nav-user{display:flex;align-items:center;gap:7px;padding:6px 12px;
+  background:var(--bg3);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;}
+.nav-user:hover{background:var(--p3);}
+.av{width:28px;height:28px;border-radius:50%;background:var(--p);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;flex-shrink:0;}
+.hamburger span{display:block;width:20px;height:2px;background:var(--txt);margin:4px 0;border-radius:2px;transition:.3s;}
+.mob-menu{display:none;background:var(--w);border-top:1px solid var(--bd);
+  padding:10px;flex-direction:column;gap:3px;}
+.mob-menu.on{display:flex;}
+.mnl{padding:11px 14px;border-radius:var(--rs);font-size:14px;font-weight:500;
+  color:var(--txt2);cursor:pointer;transition:.2s;}
+.mnl:hover,.mnl.on{color:var(--p);background:var(--bg3);}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--p),var(--p2));padding:64px 20px 72px;
+  text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;opacity:.04;
+  background:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);
+  background-size:20px 20px;}
+.hero-in{position:relative;max-width:700px;margin:0 auto;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;
+  background:rgba(255,255,255,0.15);border-radius:99px;border:1px solid rgba(255,255,255,0.25);
+  font-size:12.5px;color:rgba(255,255,255,0.9);margin-bottom:20px;}
+.hero h1{font-size:clamp(26px,5vw,50px);font-weight:800;color:#fff;
+  line-height:1.15;letter-spacing:-1px;margin-bottom:14px;}
+.hero h1 span{color:var(--a2);}
+.hero p{font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,0.75);margin-bottom:32px;line-height:1.6;}
+.hero-search{background:var(--w);border-radius:14px;padding:8px;
+  display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 16px 40px rgba(0,0,0,0.2);max-width:660px;margin:0 auto 40px;}
+.hero-search select,.hero-search input{flex:1;min-width:130px;padding:10px 14px;
+  border:1.5px solid var(--bd);border-radius:var(--rs);font-size:13.5px;
+  font-family:inherit;color:var(--txt);outline:none;background:var(--w);}
+.hero-search select:focus,.hero-search input:focus{border-color:var(--p);}
+.hero-stats{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;}
+.hstat .num{font-size:26px;font-weight:800;color:#fff;}
+.hstat .lbl{font-size:11.5px;color:rgba(255,255,255,0.6);margin-top:2px;}
+
+/* ── SECCIONES ── */
+.sec{padding:56px 20px;}.sec-in{max-width:1280px;margin:0 auto;}
+.sec-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;gap:12px;flex-wrap:wrap;}
+.sec-title{font-size:clamp(18px,3vw,26px);font-weight:800;letter-spacing:-.5px;}
+.sec-title span{color:var(--p);}
+.sec-sub{font-size:13.5px;color:var(--txt2);margin-top:5px;line-height:1.5;}
+
+/* ── CARDS PROPIEDAD ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px;}
+.pcard{background:var(--w);border-radius:var(--r);overflow:hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,0.07);transition:.25s;cursor:pointer;border:1px solid var(--bd);}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.12);}
+.pimg{position:relative;height:195px;overflow:hidden;background:var(--bg3);}
+.pimg img{width:100%;height:100%;object-fit:cover;transition:.4s;}
+.pcard:hover .pimg img{transform:scale(1.06);}
+.pbadge{position:absolute;top:10px;left:10px;padding:4px 11px;border-radius:99px;
+  font-size:11px;font-weight:700;letter-spacing:.4px;}
+.bsale{background:var(--a);color:#fff;}.brent{background:var(--p);color:#fff;}
+.bsold{background:#95A5A6;color:#fff;}.bnew{background:var(--ok);color:#fff;}
+.pstar{position:absolute;bottom:10px;left:10px;background:gold;color:#333;
+  font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;}
+.pfav{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,0.9);border:none;cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;transition:.2s;}
+.pfav:hover{background:var(--w);transform:scale(1.1);}
+.pfav.liked{color:var(--err);}
+.pbody{padding:16px;}
+.pprice{font-size:21px;font-weight:800;color:var(--p);margin-bottom:5px;}
+.ptitle{font-size:14.5px;font-weight:600;margin-bottom:5px;line-height:1.3;}
+.ploc{font-size:12.5px;color:var(--txt2);display:flex;align-items:center;gap:4px;margin-bottom:13px;}
+.pfeats{display:flex;gap:14px;padding-top:12px;border-top:1px solid var(--bg3);}
+.pfeat{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--txt2);}
+.pfeat strong{color:var(--txt);font-weight:600;}
+
+/* ── FILTROS ── */
+.filters{background:var(--w);border-radius:var(--r);padding:18px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:24px;border:1px solid var(--bd);}
+.frow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.fgrp{flex:1;min-width:140px;}
+.fgrp label{display:block;font-size:11.5px;font-weight:700;color:var(--txt2);
+  margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+.fsel{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);
+  font-size:13px;font-family:inherit;color:var(--txt);background:var(--w);outline:none;transition:.2s;}
+.fsel:focus{border-color:var(--p);}
+.rinfo{font-size:13px;color:var(--txt2);margin-bottom:14px;}
+.rinfo strong{color:var(--txt);font-weight:700;}
+
+/* ── DETALLE ── */
+.det-nav{max-width:1280px;margin:0 auto;padding:16px 20px;}
+.breadc{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--txt2);}
+.breadc span{cursor:pointer;transition:.2s;}.breadc span:hover{color:var(--p);}
+.gallery{max-width:1280px;margin:0 auto;padding:0 20px 28px;}
+.gmain{position:relative;border-radius:var(--r);overflow:hidden;height:400px;background:var(--bg3);margin-bottom:8px;}
+.gmain img{width:100%;height:100%;object-fit:cover;}
+.gthumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.gthumb{border-radius:var(--rs);overflow:hidden;height:80px;cursor:pointer;
+  border:2px solid transparent;transition:.2s;background:var(--bg3);}
+.gthumb.on,.gthumb:hover{border-color:var(--p);}
+.gthumb img{width:100%;height:100%;object-fit:cover;}
+.det-body{max-width:1280px;margin:0 auto;padding:0 20px 60px;
+  display:grid;grid-template-columns:1fr 340px;gap:36px;}
+.det-main h1{font-size:clamp(18px,3vw,28px);font-weight:800;margin-bottom:7px;letter-spacing:-.5px;}
+.det-price{font-size:30px;font-weight:800;color:var(--p);margin-bottom:14px;}
+.det-loc{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--txt2);margin-bottom:22px;}
+.det-feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:24px;}
+.dfeat{background:var(--bg3);border-radius:var(--rs);padding:13px;text-align:center;}
+.dfeat .dv{font-size:19px;font-weight:800;color:var(--p);}
+.dfeat .dk{font-size:11.5px;color:var(--txt2);margin-top:2px;}
+.det-desc{font-size:14px;color:var(--txt2);line-height:1.75;margin-bottom:24px;}
+.det-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px;}
+.dtag{padding:5px 13px;background:var(--bg3);border-radius:99px;
+  font-size:12px;color:var(--txt2);border:1px solid var(--bd);}
+.ccard{background:var(--w);border:1px solid var(--bd);border-radius:var(--r);
+  padding:22px;box-shadow:0 4px 16px rgba(0,0,0,0.08);position:sticky;top:82px;height:fit-content;}
+.agent{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--bg3);}
+.agav{width:48px;height:48px;border-radius:50%;background:var(--p);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;flex-shrink:0;}
+.agent h4{font-size:14px;font-weight:700;margin-bottom:2px;}
+.agent p{font-size:12px;color:var(--txt2);}
+.cbtns{display:flex;flex-direction:column;gap:9px;}
+.cform{margin-top:18px;padding-top:18px;border-top:1px solid var(--bg3);}
+.cform h4{font-size:13.5px;font-weight:700;margin-bottom:13px;}
+.cinput{width:100%;padding:9px 13px;border:1.5px solid var(--bd);border-radius:var(--rs);
+  font-size:13px;font-family:inherit;color:var(--txt);margin-bottom:9px;
+  outline:none;resize:none;transition:.2s;background:var(--w);}
+.cinput:focus{border-color:var(--p);}
+
+/* ── ADMIN ── */
+.adm-hdr{background:var(--p);color:#fff;padding:0 20px;height:58px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.adm-hdr h2{font-size:16px;font-weight:700;}
+.adm-body{max-width:1280px;margin:0 auto;padding:28px 20px;width:100%;}
+.tabs{display:flex;gap:3px;background:var(--bg3);padding:3px;border-radius:var(--rs);
+  margin-bottom:24px;overflow-x:auto;flex-shrink:0;}
+.tab{padding:9px 18px;border-radius:var(--rs);font-size:13px;font-weight:600;
+  cursor:pointer;border:none;background:transparent;font-family:inherit;
+  color:var(--txt2);transition:.2s;white-space:nowrap;}
+.tab.on{background:var(--w);color:var(--p);box-shadow:0 2px 7px rgba(0,0,0,0.1);}
+.tc{display:none;}.tc.on{display:block;}
+
+/* TABLA */
+.tbl{width:100%;border-collapse:collapse;background:var(--w);border-radius:var(--r);
+  overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.tbl th{padding:12px 14px;text-align:left;font-size:11.5px;font-weight:700;
+  color:var(--txt2);text-transform:uppercase;letter-spacing:.4px;
+  background:var(--bg3);border-bottom:1px solid var(--bd);}
+.tbl td{padding:12px 14px;font-size:13px;color:var(--txt);border-bottom:1px solid var(--bg3);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:#fafbfc;}
+.tacts{display:flex;gap:5px;}
+
+/* FORM CARD */
+.fcard{background:var(--w);border-radius:var(--r);padding:24px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid var(--bd);}
+.fcard h3{font-size:17px;font-weight:700;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--bg3);}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+.fg{margin-bottom:0;}
+.fg label{display:block;font-size:12.5px;font-weight:600;margin-bottom:5px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 13px;border:1.5px solid var(--bd);
+  border-radius:var(--rs);font-size:13.5px;font-family:inherit;color:var(--txt);
+  background:var(--w);outline:none;resize:vertical;transition:.2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  border-color:var(--p);box-shadow:0 0 0 3px rgba(27,79,114,0.08);}
+.sp2{grid-column:1/-1;}
+
+/* STATS */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.scard{background:var(--w);border-radius:var(--r);padding:18px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid var(--bd);display:flex;align-items:center;gap:14px;}
+.sic{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.sic.b{background:#D6EAF8;}.sic.g{background:#D5F5E3;}.sic.o{background:#FDEBD0;}.sic.r{background:#FADBD8;}
+.sv{font-size:22px;font-weight:800;}.sl{font-size:11.5px;color:var(--txt2);margin-top:1px;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;}
+.badge-sale{background:#FDEBD0;color:#A04000;}
+.badge-rent{background:#D6EAF8;color:#1A5276;}
+.badge-sold{background:#F2F3F4;color:#717D7E;}
+.status-ok{background:#D5F5E3;color:#1E8449;}
+.status-off{background:#F2F3F4;color:#717D7E;}
+.role-admin{background:#D6EAF8;color:#1A5276;}
+.role-agent{background:#E8F8F5;color:#1A7A5E;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  z-index:500;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);}
+.modal-bg.on{display:flex;}
+.modal{background:var(--w);border-radius:16px;width:100%;max-width:520px;
+  max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.25);}
+.mhdr{padding:18px 22px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;}
+.mhdr h3{font-size:16px;font-weight:700;}
+.mclose{width:30px;height:30px;border-radius:50%;border:none;background:var(--bg3);
+  cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;}
+.mclose:hover{background:var(--bd);}
+.mbody{padding:22px;}
+.mfoot{padding:14px 22px;border-top:1px solid var(--bd);display:flex;gap:9px;justify-content:flex-end;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;z-index:9999;
+  background:var(--txt);color:#fff;padding:12px 18px;border-radius:var(--rs);
+  font-size:13.5px;display:flex;align-items:center;gap:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);max-width:320px;}
+.toast.ok{background:var(--ok);}.toast.err{background:var(--err);}
+.toast.warn{background:var(--a);color:var(--txt);}
+
+/* EMPTY */
+.empty{text-align:center;padding:50px 20px;}
+.empty .eic{font-size:52px;margin-bottom:14px;}
+.empty .et{font-size:17px;font-weight:700;margin-bottom:6px;}
+.empty .es{font-size:13.5px;color:var(--txt2);}
+
+/* WHY CARDS */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px;}
+.why-card{background:var(--w);border-radius:var(--r);padding:26px;border:1px solid var(--bd);text-align:center;}
+.why-card .wic{font-size:34px;margin-bottom:13px;}
+.why-card h3{font-size:15px;font-weight:700;margin-bottom:7px;}
+.why-card p{font-size:13px;color:var(--txt2);line-height:1.6;}
+
+/* FOOTER */
+.footer{background:var(--txt);color:rgba(255,255,255,0.65);padding:44px 20px 20px;}
+.footer-in{max-width:1280px;margin:0 auto;}
+.fgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px;margin-bottom:36px;}
+.footer h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;}
+.footer p,.footer a{font-size:12.5px;line-height:1.8;}
+.footer a:hover{color:#fff;}
+.footer ul{list-style:none;}.footer li{margin-bottom:5px;}
+.fbot{border-top:1px solid rgba(255,255,255,0.1);padding-top:16px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12px;}
+
+/* FOTO UPLOAD */
+.foto-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:10px;}
+.foto-item{position:relative;border-radius:var(--rs);overflow:hidden;height:80px;background:var(--bg3);border:1px solid var(--bd);}
+.foto-item img{width:100%;height:100%;object-fit:cover;}
+.foto-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;
+  background:rgba(231,76,60,.85);color:#fff;border:none;cursor:pointer;
+  font-size:11px;display:flex;align-items:center;justify-content:center;}
+.foto-add{border:2px dashed var(--bd);border-radius:var(--rs);height:80px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:.2s;font-size:12px;color:var(--txt3);gap:4px;}
+.foto-add:hover{border-color:var(--p);color:var(--p);background:rgba(27,79,114,.04);}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .det-body{grid-template-columns:1fr;}
+  .ccard{position:static;}
+}
+@media(max-width:768px){
+  .nav-links{display:none;}.hamburger{display:block;}
+  .hero{padding:44px 16px 52px;}.hero-search{flex-direction:column;}
+  .sec{padding:40px 14px;}.grid{grid-template-columns:1fr;}
+  .gmain{height:240px;}.det-feats{grid-template-columns:repeat(2,1fr);}
+  .frow{flex-direction:column;}.fgrp{min-width:unset;width:100%;}
+  .sgrid{grid-template-columns:repeat(2,1fr);}
+  .adm-body{padding:16px 14px;}.fgrid{grid-template-columns:1fr;}
+  .nav-user span:last-child{display:none;}
+  .tbl{font-size:12px;}.tbl th,.tbl td{padding:9px 10px;}
+  .fgrid2{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){
+  .hero h1{font-size:23px;}.nav-inner{padding:0 14px;}
+  .hero-stats{gap:20px;}.sgrid{grid-template-columns:1fr 1fr;}
+  .fgrid2{grid-template-columns:1fr;}.gthumbs{grid-template-columns:repeat(4,1fr);}
+  .gthumb{height:62px;}.det-feats{grid-template-columns:repeat(2,1fr);}
+  .flag{width:26px;height:24px;font-size:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<div id="pg-login" class="pg on">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="ic">🏠</div>
+      <h1>InmoElite</h1>
+      <p>Plataforma Inmobiliaria Premium</p>
+    </div>
+    <div class="login-err" id="lerr"></div>
+    <div class="fgroup">
+      <label>Correo electrónico</label>
+      <input class="finput" id="lemail" type="email" placeholder="admin@inmoelit.com" autocomplete="email">
+    </div>
+    <div class="fgroup">
+      <label>Contraseña</label>
+      <input class="finput" id="lpw" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-p btn-w btn-lg" id="lbtn" onclick="doLogin()">
+      🔐 <span id="lbtxt">Iniciar Sesión</span>
+    </button>
+    <div class="login-hint">
+      Acceso solo para usuarios autorizados<br>
+      <strong>Demo:</strong> admin@inmoelit.com / admin123
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<div id="pg-main" class="pg">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="goPage('home')">
+        <div class="nb">🏠</div>
+        <span>Inmo<em>Elite</em></span>
+      </div>
+      <div class="nav-links">
+        <button class="nl on" id="nl-home" onclick="goPage('home')">Inicio</button>
+        <button class="nl" id="nl-props" onclick="goPage('props')">Propiedades</button>
+        <button class="nl" id="nl-about" onclick="goPage('about')">Nosotros</button>
+        <button class="nl" id="nl-contact" onclick="goPage('contact')">Contacto</button>
+        <button class="nl" id="nl-admin" onclick="goAdmin()" style="color:var(--a);font-weight:700;display:none">⚙️ Admin</button>
+      </div>
+      <div class="nav-r">
+        <div class="flags">
+          <button class="flag on" id="fl-es" onclick="setLang('es')" title="Español">🇪🇸</button>
+          <button class="flag" id="fl-en" onclick="setLang('en')" title="English">🇺🇸</button>
+          <button class="flag" id="fl-fr" onclick="setLang('fr')" title="Français">🇫🇷</button>
+          <button class="flag" id="fl-pt" onclick="setLang('pt')" title="Português">🇧🇷</button>
+        </div>
+        <div class="nav-user" onclick="confirmLogout()">
+          <div class="av" id="nav-av">A</div>
+          <span id="nav-name">Admin</span>
+          <span>▾</span>
+        </div>
+      </div>
+      <button class="hamburger" onclick="togMob()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mob-menu" id="mob-menu">
+      <div class="mnl" onclick="goPage('home');togMob()">🏠 Inicio</div>
+      <div class="mnl" onclick="goPage('props');togMob()">🏘️ Propiedades</div>
+      <div class="mnl" onclick="goPage('about');togMob()">ℹ️ Nosotros</div>
+      <div class="mnl" onclick="goPage('contact');togMob()">📞 Contacto</div>
+      <div class="mnl" id="mob-admin" onclick="goAdmin();togMob()" style="color:var(--a);font-weight:700;display:none">⚙️ Panel Admin</div>
+      <div style="padding:8px 14px;display:flex;gap:6px;align-items:center">
+        <span style="font-size:12px;color:var(--txt2)">Idioma:</span>
+        <button class="flag" onclick="setLang('es')">🇪🇸</button>
+        <button class="flag" onclick="setLang('en')">🇺🇸</button>
+        <button class="flag" onclick="setLang('fr')">🇫🇷</button>
+        <button class="flag" onclick="setLang('pt')">🇧🇷</button>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="margin:6px 14px" onclick="confirmLogout()">🚪 Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <!-- PAGE: HOME -->
+  <div id="p-home">
+    <div class="hero">
+      <div class="hero-in">
+        <div class="hero-badge">🏆 <span id="hb-txt">#1 Plataforma Inmobiliaria</span></div>
+        <h1 id="h-title">Encuentra la propiedad de tus <span>sueños</span></h1>
+        <p id="h-sub">Más de 500 propiedades verificadas. Compra, vende o arrienda con total confianza.</p>
+        <div class="hero-search">
+          <select id="hs-type">
+            <option value="">🏠 Tipo de propiedad</option>
+            <option value="casa">🏡 Casa</option>
+            <option value="apartamento">🏢 Apartamento</option>
+            <option value="oficina">💼 Oficina</option>
+            <option value="local">🏪 Local Comercial</option>
+            <option value="terreno">🌿 Terreno</option>
+          </select>
+          <select id="hs-city">
+            <option value="">📍 Ciudad</option>
+            <option value="madrid">Madrid</option>
+            <option value="barcelona">Barcelona</option>
+            <option value="valencia">Valencia</option>
+            <option value="sevilla">Sevilla</option>
+            <option value="bogota">Bogotá</option>
+            <option value="medellin">Medellín</option>
+            <option value="miami">Miami</option>
+            <option value="estado-de-mexico">Estado de México</option>
+            <option value="ciudad-de-mexico">Ciudad de México</option>
+            <option value="buenos-aires">Buenos Aires</option>
+            <option value="cordoba-argentina">Córdoba, Argentina</option>
+            <option value="rosario">Rosario</option>
+          </select>
+          <select id="hs-status">
+            <option value="">📋 Estado</option>
+            <option value="venta">En Venta</option>
+            <option value="arriendo">En Arriendo</option>
+          </select>
+          <button class="btn btn-a" onclick="heroSearch()">🔍 <span id="btn-search-txt">Buscar</span></button>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat"><div class="num" id="hstat-props">15</div><div class="lbl" id="hstat-l1">Propiedades</div></div>
+          <div class="hstat"><div class="num">12+</div><div class="lbl" id="hstat-l2">Ciudades</div></div>
+          <div class="hstat"><div class="num">500+</div><div class="lbl" id="hstat-l3">Clientes felices</div></div>
+          <div class="hstat"><div class="num">98%</div><div class="lbl" id="hstat-l4">Satisfacción</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" style="background:var(--w)">
+      <div class="sec-in">
+        <div class="sec-hdr">
+          <div>
+            <div class="sec-title" id="feat-title">Propiedades <span>Destacadas</span></div>
+            <div class="sec-sub" id="feat-sub">Las mejores oportunidades, seleccionadas para ti.</div>
+          </div>
+          <button class="btn btn-out" onclick="goPage('props')" id="btn-all-txt">Ver todas →</button>
+        </div>
+        <div class="grid" id="feat-grid"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-in">
+        <div class="sec-hdr"><div>
+          <div class="sec-title" id="why-title">¿Por qué elegirnos?</div>
+          <div class="sec-sub" id="why-sub">Más de 10 años de experiencia inmobiliaria.</div>
+        </div></div>
+        <div class="why-grid">
+          <div class="why-card"><div class="wic">🔒</div><h3 id="w1t">100% Seguro</h3><p id="w1s">Propiedades verificadas y contratos revisados por expertos.</p></div>
+          <div class="why-card"><div class="wic">💰</div><h3 id="w2t">Mejores Precios</h3><p id="w2s">Negociamos directamente con propietarios para ti.</p></div>
+          <div class="why-card"><div class="wic">⚡</div><h3 id="w3t">Proceso Rápido</h3><p id="w3s">Te acompañamos en cada paso hasta el contrato.</p></div>
+          <div class="why-card"><div class="wic">🌍</div><h3 id="w4t">Cobertura Nacional</h3><p id="w4s">Presencia en más de 12 ciudades con agentes locales.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-in">
+        <div class="fgrid2">
+          <div><h4>🏠 InmoElite</h4><p id="f-about">Tu plataforma inmobiliaria de confianza.</p></div>
+          <div><h4 id="f-links">Enlaces</h4><ul>
+            <li><a href="#" onclick="goPage('home')">Inicio</a></li>
+            <li><a href="#" onclick="goPage('props')">Propiedades</a></li>
+            <li><a href="#" onclick="goPage('about')">Nosotros</a></li>
+            <li><a href="#" onclick="goPage('contact')">Contacto</a></li>
+          </ul></div>
+          <div><h4 id="f-types">Tipos</h4><ul>
+            <li><a href="#">Casas</a></li><li><a href="#">Apartamentos</a></li>
+            <li><a href="#">Oficinas</a></li><li><a href="#">Terrenos</a></li>
+          </ul></div>
+          <div><h4 id="f-contact">Contacto</h4>
+            <p>📧 info@inmoelit.com</p>
+            <p>📞 +1 (555) 000-0000</p>
+            <p>📍 Buenos Aires, Argentina</p>
+          </div>
+        </div>
+        <div class="fbot">
+          <p>© 2024 InmoElite · <span id="f-rights">Todos los derechos reservados</span></p>
+          <p id="f-secure">🔒 Plataforma segura</p>
+        </div>
+      </div>
+    </footer>
+  </div><!-- end p-home -->
+
+  <!-- PAGE: PROPS -->
+  <div id="p-props" style="display:none">
+    <div class="sec">
+      <div class="sec-in">
+        <div class="sec-hdr">
+          <div>
+            <div class="sec-title" id="props-title">Todas las <span>Propiedades</span></div>
+          </div>
+        </div>
+        <div class="filters">
+          <div class="frow">
+            <div class="fgrp"><label id="lbl-city">Ciudad</label>
+              <select class="fsel" id="f-city" onchange="filterProps()">
+                <option value="">Todas</option>
+                <option value="madrid">Madrid</option><option value="barcelona">Barcelona</option>
+                <option value="valencia">Valencia</option><option value="sevilla">Sevilla</option>
+                <option value="bogota">Bogotá</option><option value="medellin">Medellín</option>
+                <option value="miami">Miami</option><option value="estado-de-mexico">Estado de México</option>
+                <option value="ciudad-de-mexico">Ciudad de México</option>
+                <option value="buenos-aires">Buenos Aires</option>
+                <option value="cordoba-argentina">Córdoba, Argentina</option>
+                <option value="rosario">Rosario</option>
+              </select>
+            </div>
+            <div class="fgrp"><label id="lbl-type">Tipo</label>
+              <select class="fsel" id="f-type" onchange="filterProps()">
+                <option value="">Todos</option>
+                <option value="casa">Casa</option><option value="apartamento">Apartamento</option>
+                <option value="oficina">Oficina</option><option value="local">Local</option>
+                <option value="terreno">Terreno</option>
+              </select>
+            </div>
+            <div class="fgrp"><label id="lbl-status">Estado</label>
+              <select class="fsel" id="f-status" onchange="filterProps()">
+                <option value="">Todos</option>
+                <option value="venta">En Venta</option><option value="arriendo">En Arriendo</option>
+              </select>
+            </div>
+            <div class="fgrp"><label id="lbl-rooms">Habitaciones</label>
+              <select class="fsel" id="f-rooms" onchange="filterProps()">
+                <option value="">Todas</option>
+                <option value="1">1+</option><option value="2">2+</option>
+                <option value="3">3+</option><option value="4">4+</option>
+              </select>
+            </div>
+            <div class="fgrp"><label id="lbl-price">Precio máx.</label>
+              <input class="fsel" type="number" id="f-price" placeholder="500000" oninput="filterProps()">
+            </div>
+            <div class="fgrp" style="flex:0">
+              <label>&nbsp;</label>
+              <button class="btn btn-ghost btn-sm" onclick="clearFilters()">✕ Limpiar</button>
+            </div>
+          </div>
+        </div>
+        <div class="rinfo" id="rinfo"></div>
+        <div class="grid" id="all-grid"></div>
+        <div class="empty" id="no-res" style="display:none">
+          <div class="eic">🔍</div>
+          <div class="et" id="no-res-t">Sin resultados</div>
+          <div class="es" id="no-res-s">Intenta con otros filtros.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: ABOUT -->
+  <div id="p-about" style="display:none">
+    <div style="background:var(--p);padding:60px 20px;text-align:center">
+      <h1 style="font-size:clamp(22px,4vw,38px);font-weight:800;color:#fff;margin-bottom:10px" id="about-title">Sobre InmoElite</h1>
+      <p style="color:rgba(255,255,255,0.75);max-width:580px;margin:0 auto;font-size:15px" id="about-sub">Más de 10 años conectando personas con sus propiedades ideales.</p>
+    </div>
+    <div class="sec"><div class="sec-in" style="max-width:760px">
+      <p style="font-size:15px;color:var(--txt2);line-height:1.8;margin-bottom:20px" id="about-p1">InmoElite nació con la misión de simplificar el proceso de compra, venta y arriendo de propiedades en toda América Latina y España.</p>
+      <p style="font-size:15px;color:var(--txt2);line-height:1.8" id="about-p2">Nuestro equipo de agentes certificados trabaja incansablemente para ofrecerte las mejores opciones del mercado con total transparencia.</p>
+    </div></div>
+  </div>
+
+  <!-- PAGE: CONTACT -->
+  <div id="p-contact" style="display:none">
+    <div style="background:var(--p);padding:60px 20px;text-align:center">
+      <h1 style="font-size:clamp(22px,4vw,38px);font-weight:800;color:#fff;margin-bottom:10px" id="contact-title">Contáctanos</h1>
+      <p style="color:rgba(255,255,255,0.75);max-width:580px;margin:0 auto;font-size:15px" id="contact-sub">Estamos aquí para ayudarte a encontrar tu propiedad ideal.</p>
+    </div>
+    <div class="sec"><div class="sec-in" style="max-width:580px">
+      <div class="fcard">
+        <h3 id="contact-form-t">Envíanos un mensaje</h3>
+        <div class="fgrid">
+          <div class="fg"><label id="lbl-name">Nombre completo</label><input id="cn" type="text" placeholder="Tu nombre"></div>
+          <div class="fg"><label>Email</label><input id="ce" type="email" placeholder="tu@email.com"></div>
+          <div class="fg sp2"><label id="lbl-phone">Teléfono</label><input id="cp" type="tel" placeholder="+1 555 000 0000"></div>
+          <div class="fg sp2"><label id="lbl-msg">Mensaje</label><textarea id="cm" rows="4" placeholder="¿En qué podemos ayudarte?"></textarea></div>
+        </div>
+        <button class="btn btn-p btn-w" style="margin-top:14px" onclick="sendContact()">📨 <span id="btn-send-txt">Enviar mensaje</span></button>
+      </div>
+    </div></div>
+  </div>
+</div><!-- end pg-main -->
+
+<!-- ═══════════════════════ DETALLE ═══════════════════════ -->
+<div id="pg-detail" class="pg">
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="closeDetail()" style="cursor:pointer">
+        <div class="nb">🏠</div><span>Inmo<em>Elite</em></span>
+      </div>
+      <div class="nav-r">
+        <div class="flags">
+          <button class="flag" onclick="setLang('es')">🇪🇸</button>
+          <button class="flag" onclick="setLang('en')">🇺🇸</button>
+          <button class="flag" onclick="setLang('fr')">🇫🇷</button>
+          <button class="flag" onclick="setLang('pt')">🇧🇷</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="closeDetail()">← <span id="btn-back-txt">Volver</span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="det-nav">
+    <div class="breadc">
+      <span onclick="closeDetail()">Inicio</span>
+      <span style="color:var(--txt3)">›</span>
+      <span onclick="closeDetail();goPage('props')">Propiedades</span>
+      <span style="color:var(--txt3)">›</span>
+      <span id="det-bc" style="color:var(--txt);font-weight:600"></span>
+    </div>
+  </div>
+  <div class="gallery">
+    <div class="gmain"><img id="gimg" src="" alt="Propiedad"></div>
+    <div class="gthumbs" id="gthumbs"></div>
+  </div>
+  <div class="det-body">
+    <div class="det-main">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+        <span class="pbadge" id="det-badge"></span>
+      </div>
+      <h1 id="det-title"></h1>
+      <div class="det-price" id="det-price"></div>
+      <div class="det-loc" id="det-loc"></div>
+      <div class="det-feats" id="det-feats"></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px" id="det-desc-h">Descripción</h3>
+      <div class="det-desc" id="det-desc"></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:10px" id="det-am-h">Características</h3>
+      <div class="det-tags" id="det-tags"></div>
+    </div>
+    <div>
+      <div class="ccard">
+        <div class="agent">
+          <div class="agav" id="det-agav">A</div>
+          <div><h4 id="det-agname">Agente</h4><p id="det-agrole">Agente Inmobiliario</p></div>
+        </div>
+        <div class="cbtns">
+          <button class="btn btn-ok btn-w" onclick="openWA()">💬 <span id="btn-wa-txt">WhatsApp</span></button>
+          <button class="btn btn-p btn-w" onclick="openCall()">📞 <span id="btn-call-txt">Llamar ahora</span></button>
+          <button class="btn btn-ghost btn-w" onclick="togCForm()">📧 <span id="btn-form-txt">Enviar formulario</span></button>
+        </div>
+        <div class="cform" id="cform" style="display:none">
+          <h4 id="cform-t">Envíanos un mensaje</h4>
+          <input class="cinput" id="cf-n" type="text" placeholder="Tu nombre">
+          <input class="cinput" id="cf-e" type="email" placeholder="tu@email.com">
+          <input class="cinput" id="cf-p" type="tel" placeholder="+1 555 000 0000">
+          <textarea class="cinput" id="cf-m" rows="3" placeholder="¿En qué podemos ayudarte?"></textarea>
+          <button class="btn btn-p btn-w" onclick="sendCForm()">📨 <span id="btn-send2-txt">Enviar</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ADMIN ═══════════════════════ -->
+<div id="pg-admin" class="pg">
+  <div class="adm-hdr">
+    <h2>⚙️ Panel Administrativo — InmoElite</h2>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span class="badge role-admin" id="adm-role-badge">Admin</span>
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,.3);color:#fff" onclick="closeAdmin()">← Volver al sitio</button>
+      <button class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,.3);color:#fff" onclick="confirmLogout()">🚪</button>
+    </div>
+  </div>
+  <div class="adm-body">
+    <div class="tabs">
+      <button class="tab on" onclick="admTab(0,this)">📊 Dashboard</button>
+      <button class="tab" onclick="admTab(1,this)">🏠 Propiedades</button>
+      <button class="tab" onclick="admTab(2,this)">👥 Usuarios</button>
+      <button class="tab" onclick="admTab(3,this)" id="add-tab">➕ Agregar Propiedad</button>
+    </div>
+
+    <!-- TAB 0: DASHBOARD -->
+    <div class="tc on" id="tc0">
+      <div class="sgrid" id="adm-stats"></div>
+      <div class="fcard">
+        <h3>Propiedades Recientes</h3>
+        <div style="overflow-x:auto">
+          <table class="tbl" id="recent-tbl">
+            <thead><tr><th>ID</th><th>Título</th><th>Ciudad</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="recent-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: PROPIEDADES -->
+    <div class="tc" id="tc1">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+        <button class="btn btn-p" onclick="admTab(3,document.querySelectorAll('.tab')[3])">➕ Agregar Propiedad</button>
+      </div>
+      <div class="fcard" style="padding:0;overflow:hidden">
+        <div style="overflow-x:auto">
+          <table class="tbl" id="adm-props-tbl">
+            <thead><tr><th>ID</th><th>Título</th><th>Ciudad</th><th>Tipo</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="adm-props-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: USUARIOS -->
+    <div class="tc" id="tc2">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+        <button class="btn btn-p" onclick="openModal('mod-user')">➕ Agregar Usuario</button>
+      </div>
+      <div class="fcard" style="padding:0;overflow:hidden">
+        <div style="overflow-x:auto">
+          <table class="tbl" id="users-tbl">
+            <thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: AGREGAR / EDITAR PROPIEDAD -->
+    <div class="tc" id="tc3">
+      <div class="fcard">
+        <h3 id="form-prop-title">➕ Agregar Nueva Propiedad</h3>
+        <input type="hidden" id="edit-id">
+        <div class="fgrid">
+          <div class="fg sp2"><label>Título de la propiedad *</label><input id="p-title" type="text" placeholder="Ej: Hermosa casa en zona residencial con jardín"></div>
+          <div class="fg"><label>Tipo *</label>
+            <select id="p-type">
+              <option value="casa">🏡 Casa</option><option value="apartamento">🏢 Apartamento</option>
+              <option value="oficina">💼 Oficina</option><option value="local">🏪 Local Comercial</option>
+              <option value="terreno">🌿 Terreno</option>
+            </select>
+          </div>
+          <div class="fg"><label>Estado *</label>
+            <select id="p-status">
+              <option value="venta">En Venta</option>
+              <option value="arriendo">En Arriendo</option>
+              <option value="vendida">Vendida</option>
+            </select>
+          </div>
+          <div class="fg"><label>Precio (USD) *</label><input id="p-price" type="number" placeholder="250000"></div>
+          <div class="fg"><label>Ciudad *</label>
+            <select id="p-city">
+              <option value="madrid">Madrid</option><option value="barcelona">Barcelona</option>
+              <option value="valencia">Valencia</option><option value="sevilla">Sevilla</option>
+              <option value="bogota">Bogotá</option><option value="medellin">Medellín</option>
+              <option value="miami">Miami</option><option value="estado-de-mexico">Estado de México</option>
+              <option value="ciudad-de-mexico">Ciudad de México</option>
+              <option value="buenos-aires">Buenos Aires</option>
+              <option value="cordoba-argentina">Córdoba, Argentina</option>
+              <option value="rosario">Rosario</option>
+            </select>
+          </div>
+          <div class="fg"><label>Dirección</label><input id="p-addr" type="text" placeholder="Av. Principal 123, Barrio Centro"></div>
+          <div class="fg"><label>Área (m²)</label><input id="p-area" type="number" placeholder="120" min="0"></div>
+          <div class="fg"><label>Habitaciones</label><input id="p-rooms" type="number" placeholder="3" min="0"></div>
+          <div class="fg"><label>Baños</label><input id="p-baths" type="number" placeholder="2" min="0"></div>
+          <div class="fg"><label>Garajes</label><input id="p-garages" type="number" placeholder="1" min="0"></div>
+          <div class="fg sp2"><label>Descripción *</label><textarea id="p-desc" rows="4" placeholder="Describe la propiedad detalladamente. Cuéntale al comprador qué la hace especial..."></textarea></div>
+          <div class="fg sp2"><label>Características (separadas por comas)</label><input id="p-amenities" type="text" placeholder="Piscina, Jardín, Seguridad 24h, Gimnasio, Terraza"></div>
+          <div class="fg sp2">
+            <label>📸 Fotos de la propiedad</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('foto-file').click()">📁 Subir desde computadora</button>
+              <input type="file" id="foto-file" accept="image/*" multiple style="display:none" onchange="uploadFotos(this)">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addUrlFoto()">🔗 Agregar URL</button>
+            </div>
+            <div class="foto-preview" id="foto-preview"></div>
+            <input type="hidden" id="p-images">
+          </div>
+          <div class="fg"><label>Nombre del agente</label><input id="p-agent" type="text" placeholder="María García"></div>
+          <div class="fg"><label>WhatsApp del agente</label><input id="p-phone" type="tel" placeholder="+5491155550000"></div>
+          <div class="fg"><label>¿Destacada en inicio?</label>
+            <select id="p-featured"><option value="no">No</option><option value="yes">Sí — Mostrar en inicio</option></select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+          <button class="btn btn-p" onclick="saveProp()">💾 <span id="save-btn-txt">Guardar Propiedad</span></button>
+          <button class="btn btn-ghost" onclick="clearPropForm()">✕ Cancelar / Limpiar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end pg-admin -->
+
+<!-- MODALES -->
+<div class="modal-bg" id="mod-user">
+  <div class="modal">
+    <div class="mhdr"><h3>➕ Agregar Usuario</h3><button class="mclose" onclick="closeModal('mod-user')">✕</button></div>
+    <div class="mbody">
+      <div class="fgroup"><label>Nombre completo</label><input class="finput" id="u-name" type="text" placeholder="Juan García"></div>
+      <div class="fgroup"><label>Email</label><input class="finput" id="u-email" type="email" placeholder="juan@email.com"></div>
+      <div class="fgroup"><label>Contraseña</label><input class="finput" id="u-pw" type="password" placeholder="••••••••"></div>
+      <div class="fgroup"><label>Rol</label>
+        <select class="finput" id="u-role">
+          <option value="admin">Administrador — acceso total</option>
+          <option value="agent">Agente — puede agregar propiedades</option>
+          <option value="visitor">Visitante — solo lectura</option>
+        </select>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeModal('mod-user')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveUser()">💾 Guardar Usuario</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="mod-del">
+  <div class="modal">
+    <div class="mhdr"><h3>⚠️ Confirmar eliminación</h3><button class="mclose" onclick="closeModal('mod-del')">✕</button></div>
+    <div class="mbody"><p id="del-msg" style="font-size:14px;line-height:1.6;color:var(--txt2)">¿Estás seguro? Esta acción no se puede deshacer.</p></div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeModal('mod-del')">Cancelar</button>
+      <button class="btn btn-err" id="del-confirm-btn">🗑️ Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// INMOELIT — APP COMPLETA
+// ════════════════════════════════════════════════
+
+// ── BASE DE DATOS USUARIOS ──
+// Para cambiar email/contraseña: editar aquí directamente
+var USERS = JSON.parse(localStorage.getItem('re_users') || 'null') || [
+  {id:1, name:'Admin Principal', email:'admin@inmoelit.com', password:'admin123', role:'admin', active:true},
+  {id:2, name:'María García',   email:'maria@inmoelit.com',  password:'agent123',  role:'agent', active:true},
+  {id:3, name:'Carlos López',   email:'carlos@inmoelit.com', password:'agent123',  role:'agent', active:true},
+];
+function saveUsers(){ try{ localStorage.setItem('re_users', JSON.stringify(USERS)); }catch(e){} }
+
+// ── AUTH ──
+var AUTH = { ok: false, user: null };
+
+function doLogin(){
+  var emailEl = document.getElementById('lemail');
+  var pwEl    = document.getElementById('lpw');
+  var errEl   = document.getElementById('lerr');
+  var btn     = document.getElementById('lbtn');
+  var btxt    = document.getElementById('lbtxt');
+
+  var email = (emailEl.value||'').trim().toLowerCase();
+  var pw    = (pwEl.value||'').trim();
+
+  errEl.classList.remove('on');
+  emailEl.classList.remove('err');
+  pwEl.classList.remove('err');
+
+  if(!email || !pw){
+    errEl.textContent = 'Ingresa tu email y contraseña.';
+    errEl.classList.add('on');
+    return;
+  }
+
+  btn.disabled = true;
+  btxt.textContent = 'Verificando...';
+
+  setTimeout(function(){
+    var found = null;
+    for(var i=0; i<USERS.length; i++){
+      var u = USERS[i];
+      if(u.email.toLowerCase()===email && u.password===pw && u.active){
+        found = u; break;
+      }
+    }
+    if(found){
+      AUTH.ok = true;
+      AUTH.user = found;
+      try{ sessionStorage.setItem('re_sess', JSON.stringify({id:found.id})); }catch(e){}
+      enterApp();
+      showToast('✅ Bienvenido, '+found.name+'!','ok');
+    } else {
+      errEl.textContent = 'Email o contraseña incorrectos.';
+      errEl.classList.add('on');
+      pwEl.classList.add('err');
+      pwEl.value = '';
+      pwEl.focus();
+      btn.disabled = false;
+      btxt.textContent = 'Iniciar Sesión';
+    }
+  }, 500);
+}
+
+function enterApp(){
+  // Ocultar login
+  var login = document.getElementById('pg-login');
+  login.classList.remove('on');
+  login.style.display = 'none';
+
+  // Mostrar main
+  var main = document.getElementById('pg-main');
+  main.classList.add('on');
+  main.style.display = 'flex';
+  main.style.flexDirection = 'column';
+
+  // Ocultar otras
+  document.getElementById('pg-detail').style.display = 'none';
+  document.getElementById('pg-detail').classList.remove('on');
+  document.getElementById('pg-admin').style.display = 'none';
+  document.getElementById('pg-admin').classList.remove('on');
+
+  // Actualizar nav
+  var av = document.getElementById('nav-av');
+  var nm = document.getElementById('nav-name');
+  if(av && AUTH.user) av.textContent = AUTH.user.name.charAt(0).toUpperCase();
+  if(nm && AUTH.user) nm.textContent = AUTH.user.name.split(' ')[0];
+
+  // Mostrar botón admin si corresponde
+  var adminBtn = document.getElementById('nl-admin');
+  var mobAdmin = document.getElementById('mob-admin');
+  if(AUTH.user && (AUTH.user.role==='admin'||AUTH.user.role==='agent')){
+    if(adminBtn) adminBtn.style.display = '';
+    if(mobAdmin) mobAdmin.style.display = '';
+  }
+
+  // Mostrar página home
+  goPage('home');
+
+  // Stats
+  var sp = document.getElementById('hstat-props');
+  if(sp) sp.textContent = PROPS.length;
+}
+
+function tryRestore(){
+  try{
+    var s = sessionStorage.getItem('re_sess');
+    if(!s) return false;
+    var obj = JSON.parse(s);
+    for(var i=0; i<USERS.length; i++){
+      if(USERS[i].id===obj.id && USERS[i].active){
+        AUTH.ok = true; AUTH.user = USERS[i]; return true;
+      }
+    }
+  }catch(e){}
+  return false;
+}
+
+function confirmLogout(){
+  if(confirm('¿Cerrar sesión?')){
+    AUTH.ok=false; AUTH.user=null;
+    try{ sessionStorage.removeItem('re_sess'); }catch(e){}
+    // Volver al login
+    hideAll();
+    var login = document.getElementById('pg-login');
+    login.style.display = 'flex';
+    login.classList.add('on');
+    document.getElementById('lpw').value='';
+    document.getElementById('lerr').classList.remove('on');
+  }
+}
+
+function hideAll(){
+  ['pg-login','pg-main','pg-detail','pg-admin'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.style.display='none'; el.classList.remove('on'); }
+  });
+}
+
+// ── NAVEGACIÓN PÁGINAS ──
+var curPage = 'home';
+function goPage(page){
+  ['home','props','about','contact'].forEach(function(p){
+    var el = document.getElementById('p-'+p);
+    if(el) el.style.display = (p===page)?'block':'none';
+  });
+  document.querySelectorAll('.nl').forEach(function(l){ l.classList.remove('on'); });
+  var nl = document.getElementById('nl-'+page);
+  if(!nl) nl = document.getElementById('nl-props'); // fallback
+  if(nl) nl.classList.add('on');
+  curPage = page;
+  if(page==='props') renderAllProps(PROPS);
+  try{ window.scrollTo(0,0); }catch(e){}
+}
+
+function togMob(){
+  document.getElementById('mob-menu').classList.toggle('on');
+}
+
+// ── ADMIN ──
+function goAdmin(){
+  if(!AUTH.user||(AUTH.user.role!=='admin'&&AUTH.user.role!=='agent')){
+    showToast('Sin permisos de administrador','err'); return;
+  }
+  hideAll();
+  var adm = document.getElementById('pg-admin');
+  adm.style.display='flex';
+  adm.style.flexDirection='column';
+  adm.classList.add('on');
+  var badge = document.getElementById('adm-role-badge');
+  if(badge) badge.textContent = AUTH.user.role==='admin'?'Admin':'Agente';
+  renderAdmDash();
+  renderAdmProps();
+  renderAdmUsers();
+}
+
+function closeAdmin(){
+  hideAll();
+  var main = document.getElementById('pg-main');
+  main.style.display='flex';
+  main.style.flexDirection='column';
+  main.classList.add('on');
+  goPage(curPage==='admin'?'home':curPage);
+}
+
+// ── TABS ADMIN ──
+function admTab(idx, btn){
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  document.querySelectorAll('.tc').forEach(function(c){ c.classList.remove('on'); });
+  if(btn) btn.classList.add('on');
+  var tc = document.getElementById('tc'+idx);
+  if(tc) tc.classList.add('on');
+  if(idx===1) renderAdmProps();
+  if(idx===2) renderAdmUsers();
+  if(idx===0) renderAdmDash();
+}
+
+// ── DETALLE ──
+var CUR_PROP = null;
+function openDetail(id){
+  var prop = PROPS.find(function(p){ return p.id===id; });
+  if(!prop) return;
+  CUR_PROP = prop;
+
+  // Galería
+  var imgs = (prop.images&&prop.images.length) ? prop.images : ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800'];
+  document.getElementById('gimg').src = imgs[0];
+  var thumbsEl = document.getElementById('gthumbs');
+  thumbsEl.innerHTML = imgs.map(function(img,i){
+    return '<div class="gthumb'+(i===0?' on':'')+'" onclick="changeImg('+i+')" style="'+(imgs.length===1?'display:none':'')+'"><img src="'+img+'" loading="lazy"></div>';
+  }).join('');
+
+  document.getElementById('det-bc').textContent = prop.title;
+  document.getElementById('det-title').textContent = prop.title;
+  document.getElementById('det-price').textContent = fmtPrice(prop.price, prop.status);
+
+  var badge = document.getElementById('det-badge');
+  badge.textContent = prop.status==='venta'?'En Venta':'En Arriendo';
+  badge.className = 'pbadge '+(prop.status==='venta'?'bsale':'brent');
+
+  document.getElementById('det-loc').innerHTML = '📍 '+capFirst(prop.city)+' · '+(prop.address||'');
+
+  var feats = [];
+  feats.push({v:prop.area||0, k:'m² Área'});
+  if(prop.rooms>0) feats.push({v:prop.rooms, k:'Habitaciones'});
+  if(prop.baths>0) feats.push({v:prop.baths, k:'Baños'});
+  if(prop.garages>0) feats.push({v:prop.garages, k:'Garajes'});
+  document.getElementById('det-feats').innerHTML = feats.map(function(f){
+    return '<div class="dfeat"><div class="dv">'+f.v+'</div><div class="dk">'+f.k+'</div></div>';
+  }).join('');
+
+  document.getElementById('det-desc').textContent = prop.desc||'';
+  document.getElementById('det-tags').innerHTML = (prop.amenities||[]).map(function(a){
+    return '<span class="dtag">✓ '+a+'</span>';
+  }).join('');
+
+  document.getElementById('det-agav').textContent = (prop.agent||'A').charAt(0).toUpperCase();
+  document.getElementById('det-agname').textContent = prop.agent||'Agente';
+
+  hideAll();
+  var det = document.getElementById('pg-detail');
+  det.style.display='block';
+  det.classList.add('on');
+  try{ window.scrollTo(0,0); }catch(e){}
+}
+
+function changeImg(i){
+  var imgs = CUR_PROP&&CUR_PROP.images ? CUR_PROP.images : [];
+  if(!imgs[i]) return;
+  document.getElementById('gimg').src = imgs[i];
+  document.querySelectorAll('.gthumb').forEach(function(t,j){ t.classList.toggle('on',j===i); });
+}
+
+function closeDetail(){
+  hideAll();
+  var main = document.getElementById('pg-main');
+  main.style.display='flex'; main.style.flexDirection='column'; main.classList.add('on');
+  goPage('props');
+}
+
+function togCForm(){
+  var f = document.getElementById('cform');
+  f.style.display = f.style.display==='none'?'block':'none';
+}
+function openWA(){
+  if(!CUR_PROP) return;
+  var ph = (CUR_PROP.phone||'').replace(/\D/g,'') || '5491100000000';
+  var msg = encodeURIComponent('Hola! Me interesa la propiedad: '+CUR_PROP.title+'. ¿Puede darme más información?');
+  window.open('https://wa.me/'+ph+'?text='+msg,'_blank');
+}
+function openCall(){
+  if(!CUR_PROP) return;
+  window.location.href='tel:'+(CUR_PROP.phone||'+5491100000000');
+}
+function sendCForm(){
+  var n=document.getElementById('cf-n').value.trim();
+  var e=document.getElementById('cf-e').value.trim();
+  if(!n||!e){ showToast('Completa nombre y email','err'); return; }
+  showToast('📨 Mensaje enviado. Te contactaremos pronto.','ok');
+  ['cf-n','cf-e','cf-p','cf-m'].forEach(function(id){ document.getElementById(id).value=''; });
+  togCForm();
+}
+
+// ── PROPIEDADES ──
+var PROPS = JSON.parse(localStorage.getItem('re_props')||'null') || [
+  {id:1,title:'Casa Moderna con Piscina',type:'casa',status:'venta',price:485000,city:'madrid',address:'Calle de la Paz 42',area:280,rooms:4,baths:3,garages:2,desc:'Espectacular casa moderna en zona residencial premium. Piscina privada, jardín paisajístico y acabados de lujo.',amenities:['Piscina','Jardín','Seguridad 24h','Gimnasio','Terraza','Calefacción'],images:['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800','https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800'],agent:'María García',phone:'+34600000001',featured:true},
+  {id:2,title:'Apartamento Centro Histórico',type:'apartamento',status:'venta',price:325000,city:'barcelona',address:'Calle Mayor 15, 3B',area:95,rooms:2,baths:2,garages:1,desc:'Elegante apartamento renovado en el corazón de Barcelona. Techos altos, suelos de madera y vistas a la ciudad.',amenities:['Ascensor','Portero','Balcón','Aire acondicionado','Armarios'],images:['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800','https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800'],agent:'Carlos López',phone:'+34600000002',featured:true},
+  {id:3,title:'Villa de Lujo Vista al Mar',type:'casa',status:'venta',price:1250000,city:'valencia',address:'Paseo Marítimo 88',area:450,rooms:5,baths:4,garages:3,desc:'Exclusiva villa frente al Mediterráneo. Piscina infinita, spa privado y tecnología domótica avanzada.',amenities:['Piscina infinita','Spa','Vistas al mar','Domótica','Garaje triple','Bodega'],images:['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800','https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800'],agent:'María García',phone:'+34600000001',featured:true},
+  {id:4,title:'Oficina Premium Torre Empresarial',type:'oficina',status:'arriendo',price:4500,city:'madrid',address:'Paseo de la Castellana 200',area:180,rooms:0,baths:3,garages:4,desc:'Oficina de alta gama en el edificio corporativo más moderno. Planta diáfana con vista panorámica.',amenities:['Recepción 24h','Parking','Sala reuniones','Cafetería','Fibra óptica'],images:['https://images.unsplash.com/photo-1497366216548-37526070297c?w=800'],agent:'Carlos López',phone:'+34600000002',featured:false},
+  {id:5,title:'Casa en Palermo con Pileta',type:'casa',status:'venta',price:320000,city:'buenos-aires',address:'Av. del Libertador 4500, Palermo',area:240,rooms:4,baths:3,garages:2,desc:'Espectacular casa en barrio cerrado de Palermo con acceso controlado. Amplio jardín, pileta y parrilla. A 10 minutos del microcentro.',amenities:['Pileta','Parrilla','Jardín','Seguridad 24h','Quincho','Laundry'],images:['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800','https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800'],agent:'María García',phone:'+5491100000001',featured:true},
+  {id:6,title:'Departamento en Recoleta',type:'apartamento',status:'arriendo',price:950,city:'buenos-aires',address:'Av. Santa Fe 1200, Recoleta',area:85,rooms:2,baths:1,garages:1,desc:'Luminoso departamento a metros del cementerio de la Recoleta. Edificio con amenities completos y expensas bajas.',amenities:['Portería 24h','Ascensor','Balcón','SUM','Baulera'],images:['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800'],agent:'Carlos López',phone:'+5491100000002',featured:false},
+  {id:7,title:'Casa en Nueva Córdoba',type:'casa',status:'venta',price:145000,city:'cordoba-argentina',address:'Av. Hipólito Yrigoyen 1450, Nueva Córdoba',area:160,rooms:3,baths:2,garages:1,desc:'Excelente casa en el corazón de Nueva Córdoba. Ideal para inversión o vivienda. A cuadras de universidades y servicios.',amenities:['Terraza','Patio','Parrilla','Garage','Gas natural','Escritura al día'],images:['https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800','https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'],agent:'María García',phone:'+5493510000001',featured:true},
+  {id:8,title:'Depto Cerro de las Rosas',type:'apartamento',status:'venta',price:98000,city:'cordoba-argentina',address:'Av. Rafael Núñez 4100, Cerro de las Rosas',area:75,rooms:2,baths:1,garages:1,desc:'Moderno departamento en el barrio más exclusivo de Córdoba. Excelentes vistas y edificio con amenities completos.',amenities:['Vista panorámica','Pileta','Gimnasio','Vigilancia','Balcón','Aire acond.'],images:['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800'],agent:'Carlos López',phone:'+5493510000002',featured:false},
+  {id:9,title:'Casa Quinta en Rosario Norte',type:'casa',status:'venta',price:210000,city:'rosario',address:'Av. Pellegrini 2800, Rosario',area:300,rooms:4,baths:3,garages:3,desc:'Amplia casa quinta con jardín de 800m², pileta, quincho y cancha de tenis. Barrio tranquilo con escritura inmediata.',amenities:['Pileta','Cancha tenis','Quincho','Jardín 800m²','Garage triple'],images:['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800'],agent:'María García',phone:'+5493410000001',featured:true},
+  {id:10,title:'Casa Residencial en Satélite',type:'casa',status:'venta',price:185000,city:'estado-de-mexico',address:'Av. Lomas Verdes 340, Naucalpan',area:180,rooms:3,baths:2,garages:2,desc:'Hermosa casa en fraccionamiento privado con vigilancia 24 horas. Amplios espacios y acabados modernos cerca del periférico.',amenities:['Jardín','Vigilancia 24h','Área de juegos','Estacionamiento'],images:['https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800'],agent:'María García',phone:'+5215500000001',featured:true},
+  {id:11,title:'Depto Premium en Polanco',type:'apartamento',status:'arriendo',price:1800,city:'ciudad-de-mexico',address:'Emilio Castelar 175, Polanco',area:120,rooms:2,baths:2,garages:1,desc:'Moderno departamento en la zona más exclusiva de la CDMX. Amueblado, con roof garden y a pasos del Parque Lincoln.',amenities:['Amueblado','Roof garden','Gimnasio','Concierge','Seguridad'],images:['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800'],agent:'Carlos López',phone:'+5215500000002',featured:false},
+  {id:12,title:'Luxury Condo Downtown Miami',type:'apartamento',status:'venta',price:950000,city:'miami',address:'1000 Brickell Ave, Unit 2505',area:175,rooms:3,baths:2,garages:1,desc:'Stunning luxury condo in the heart of Miami. Floor-to-ceiling windows, Italian kitchen, and breathtaking bay views.',amenities:['Bay view','Pool','Gym','Concierge','Valet parking','Smart home'],images:['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800','https://images.unsplash.com/photo-1560184897-ae75f418493e?w=800'],agent:'Carlos López',phone:'+13055550001',featured:true},
+];
+function saveProps(){ try{ localStorage.setItem('re_props',JSON.stringify(PROPS)); }catch(e){} }
+
+function fmtPrice(p,status){
+  var s = new Intl.NumberFormat('es-ES').format(p);
+  return (status==='arriendo'||status==='rent') ? '$'+s+'/mes' : '$'+s;
+}
+function capFirst(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
+function typeLabel(t){
+  var m={casa:'Casa',apartamento:'Apartamento',oficina:'Oficina',local:'Local',terreno:'Terreno'};
+  return m[t]||t;
+}
+
+function propCard(prop){
+  var img = (prop.images&&prop.images[0])||'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800';
+  var badgeCls = prop.status==='venta'?'bsale':prop.status==='arriendo'?'brent':'bsold';
+  var badgeTxt = prop.status==='venta'?'En Venta':prop.status==='arriendo'?'En Arriendo':'Vendida';
+  return '<div class="pcard" onclick="openDetail('+prop.id+')">'+
+    '<div class="pimg">'+
+      '<img src="'+img+'" alt="'+prop.title+'" loading="lazy">'+
+      '<span class="pbadge '+badgeCls+'">'+badgeTxt+'</span>'+
+      (prop.featured?'<span class="pstar">⭐ Destacada</span>':'')+
+      '<button class="pfav" onclick="event.stopPropagation();this.classList.toggle(\'liked\');this.textContent=this.classList.contains(\'liked\')?\'❤️\':\'🤍\'">🤍</button>'+
+    '</div>'+
+    '<div class="pbody">'+
+      '<div class="pprice">'+fmtPrice(prop.price,prop.status)+'</div>'+
+      '<div class="ptitle">'+prop.title+'</div>'+
+      '<div class="ploc">📍 '+capFirst(prop.city)+' · '+typeLabel(prop.type)+'</div>'+
+      '<div class="pfeats">'+
+        (prop.rooms>0?'<div class="pfeat">🛏 <strong>'+prop.rooms+'</strong> Hab.</div>':'')+
+        (prop.baths>0?'<div class="pfeat">🚿 <strong>'+prop.baths+'</strong> Baños</div>':'')+
+        '<div class="pfeat">📐 <strong>'+prop.area+'</strong> m²</div>'+
+        (prop.garages>0?'<div class="pfeat">🚗 <strong>'+prop.garages+'</strong></div>':'')+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function renderFeat(){
+  var g = document.getElementById('feat-grid');
+  if(!g) return;
+  var feat = PROPS.filter(function(p){ return p.featured; }).slice(0,6);
+  g.innerHTML = feat.length ? feat.map(propCard).join('') : '<p style="color:var(--txt2);font-size:13px">No hay propiedades destacadas aún.</p>';
+}
+
+function renderAllProps(list){
+  var g  = document.getElementById('all-grid');
+  var nr = document.getElementById('no-res');
+  var ri = document.getElementById('rinfo');
+  if(!g) return;
+  if(list.length===0){
+    g.innerHTML=''; nr.style.display='block';
+    if(ri) ri.innerHTML='';
+  } else {
+    nr.style.display='none';
+    g.innerHTML = list.map(propCard).join('');
+    if(ri) ri.innerHTML='<strong>'+list.length+'</strong> propiedades encontradas';
+  }
+}
+
+function filterProps(){
+  var city   = document.getElementById('f-city').value;
+  var type   = document.getElementById('f-type').value;
+  var status = document.getElementById('f-status').value;
+  var rooms  = parseInt(document.getElementById('f-rooms').value)||0;
+  var price  = parseFloat(document.getElementById('f-price').value)||Infinity;
+  var res = PROPS.filter(function(p){
+    if(city   && p.city!==city)             return false;
+    if(type   && p.type!==type)             return false;
+    if(status && p.status!==status)         return false;
+    if(rooms  && (p.rooms||0)<rooms)        return false;
+    if(p.price>price)                       return false;
+    return true;
+  });
+  renderAllProps(res);
+}
+
+function clearFilters(){
+  ['f-city','f-type','f-status','f-rooms','f-price'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  renderAllProps(PROPS);
+}
+
+function heroSearch(){
+  var type   = document.getElementById('hs-type').value;
+  var city   = document.getElementById('hs-city').value;
+  var status = document.getElementById('hs-status').value;
+  goPage('props');
+  if(type) document.getElementById('f-type').value=type;
+  if(city) document.getElementById('f-city').value=city;
+  if(status) document.getElementById('f-status').value=status;
+  filterProps();
+}
+
+// ── FOTOS ──
+var FOTOS = []; // Array de URLs o base64
+
+function uploadFotos(input){
+  var files = Array.from(input.files);
+  files.forEach(function(file){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      FOTOS.push(e.target.result);
+      renderFotoPreview();
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function addUrlFoto(){
+  var url = prompt('Pega la URL de la imagen:','https://');
+  if(url && url.startsWith('http')){
+    FOTOS.push(url);
+    renderFotoPreview();
+  }
+}
+
+function renderFotoPreview(){
+  var c = document.getElementById('foto-preview');
+  if(!c) return;
+  c.innerHTML = FOTOS.map(function(src,i){
+    return '<div class="foto-item">'+
+      '<img src="'+src+'" alt="Foto '+(i+1)+'">'+
+      '<button class="foto-del" onclick="delFoto('+i+')" title="Eliminar">✕</button>'+
+    '</div>';
+  }).join('');
+  // Add button
+  c.innerHTML += '<div class="foto-add" onclick="document.getElementById(\'foto-file\').click()">'+
+    '<span style="font-size:22px">📷</span>'+
+    '<span>Agregar foto</span>'+
+  '</div>';
+  document.getElementById('p-images').value = JSON.stringify(FOTOS);
+}
+
+function delFoto(i){
+  FOTOS.splice(i,1);
+  renderFotoPreview();
+}
+
+// ── GUARDAR PROPIEDAD ──
+function saveProp(){
+  var title  = (document.getElementById('p-title').value||'').trim();
+  var price  = parseFloat(document.getElementById('p-price').value)||0;
+  var desc   = (document.getElementById('p-desc').value||'').trim();
+  if(!title||!price||!desc){
+    showToast('Completa: Título, Precio y Descripción','err'); return;
+  }
+  var amenRaw = (document.getElementById('p-amenities').value||'').trim();
+  var amenities = amenRaw ? amenRaw.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+  var images = FOTOS.length ? FOTOS.slice() : [];
+
+  var prop = {
+    title:    title,
+    type:     document.getElementById('p-type').value,
+    status:   document.getElementById('p-status').value,
+    price:    price,
+    city:     document.getElementById('p-city').value,
+    address:  (document.getElementById('p-addr').value||'').trim(),
+    area:     parseInt(document.getElementById('p-area').value)||0,
+    rooms:    parseInt(document.getElementById('p-rooms').value)||0,
+    baths:    parseInt(document.getElementById('p-baths').value)||0,
+    garages:  parseInt(document.getElementById('p-garages').value)||0,
+    desc:     desc,
+    amenities:amenities,
+    images:   images,
+    agent:    (document.getElementById('p-agent').value||'').trim(),
+    phone:    (document.getElementById('p-phone').value||'').trim(),
+    featured: document.getElementById('p-featured').value==='yes',
+  };
+
+  var editId = document.getElementById('edit-id').value;
+  if(editId){
+    var idx = PROPS.findIndex(function(p){ return p.id===parseInt(editId); });
+    if(idx!==-1){ prop.id=parseInt(editId); PROPS[idx]=prop; }
+  } else {
+    prop.id = Date.now();
+    PROPS.unshift(prop);
+  }
+  saveProps();
+  renderFeat();
+  document.getElementById('hstat-props').textContent = PROPS.length;
+  showToast('✅ Propiedad guardada exitosamente','ok');
+  clearPropForm();
+  admTab(1, document.querySelectorAll('.tab')[1]);
+}
+
+function clearPropForm(){
+  ['p-title','p-addr','p-area','p-rooms','p-baths','p-garages','p-desc','p-amenities','p-agent','p-phone'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('p-price').value='';
+  document.getElementById('p-type').value='casa';
+  document.getElementById('p-status').value='venta';
+  document.getElementById('p-featured').value='no';
+  document.getElementById('edit-id').value='';
+  document.getElementById('form-prop-title').textContent='➕ Agregar Nueva Propiedad';
+  document.getElementById('save-btn-txt').textContent='Guardar Propiedad';
+  FOTOS=[];
+  renderFotoPreview();
+}
+
+function editProp(id){
+  var p = PROPS.find(function(x){ return x.id===id; });
+  if(!p) return;
+  document.getElementById('edit-id').value=p.id;
+  document.getElementById('p-title').value=p.title||'';
+  document.getElementById('p-type').value=p.type||'casa';
+  document.getElementById('p-status').value=p.status||'venta';
+  document.getElementById('p-price').value=p.price||'';
+  document.getElementById('p-city').value=p.city||'madrid';
+  document.getElementById('p-addr').value=p.address||'';
+  document.getElementById('p-area').value=p.area||'';
+  document.getElementById('p-rooms').value=p.rooms||'';
+  document.getElementById('p-baths').value=p.baths||'';
+  document.getElementById('p-garages').value=p.garages||'';
+  document.getElementById('p-desc').value=p.desc||'';
+  document.getElementById('p-amenities').value=(p.amenities||[]).join(', ');
+  document.getElementById('p-agent').value=p.agent||'';
+  document.getElementById('p-phone').value=p.phone||'';
+  document.getElementById('p-featured').value=p.featured?'yes':'no';
+  FOTOS = (p.images||[]).slice();
+  renderFotoPreview();
+  document.getElementById('form-prop-title').textContent='✏️ Editar Propiedad';
+  document.getElementById('save-btn-txt').textContent='Actualizar Propiedad';
+  admTab(3, document.querySelectorAll('.tab')[3]);
+}
+
+// ── ADMIN RENDER ──
+function renderAdmDash(){
+  var s = document.getElementById('adm-stats');
+  if(!s) return;
+  var total=PROPS.length, venta=PROPS.filter(function(p){return p.status==='venta';}).length,
+      arr=PROPS.filter(function(p){return p.status==='arriendo';}).length, feat=PROPS.filter(function(p){return p.featured;}).length;
+  s.innerHTML=
+    '<div class="scard"><div class="sic b">🏠</div><div><div class="sv">'+total+'</div><div class="sl">Total Propiedades</div></div></div>'+
+    '<div class="scard"><div class="sic g">💚</div><div><div class="sv">'+venta+'</div><div class="sl">En Venta</div></div></div>'+
+    '<div class="scard"><div class="sic o">🏢</div><div><div class="sv">'+arr+'</div><div class="sl">En Arriendo</div></div></div>'+
+    '<div class="scard"><div class="sic b">⭐</div><div><div class="sv">'+feat+'</div><div class="sl">Destacadas</div></div></div>'+
+    '<div class="scard"><div class="sic g">👥</div><div><div class="sv">'+USERS.length+'</div><div class="sl">Usuarios</div></div></div>';
+  var tb = document.getElementById('recent-body');
+  if(tb) tb.innerHTML = PROPS.slice(0,6).map(function(p){
+    return '<tr><td>#'+p.id+'</td><td><strong>'+p.title+'</strong></td><td>'+capFirst(p.city)+'</td><td>'+fmtPrice(p.price,p.status)+'</td>'+
+    '<td><span class="badge '+(p.status==='venta'?'badge-sale':'badge-rent')+'">'+(p.status==='venta'?'En Venta':'En Arriendo')+'</span></td>'+
+    '<td><div class="tacts">'+
+      '<button class="btn btn-out btn-sm" onclick="editProp('+p.id+')">✏️</button>'+
+      '<button class="btn btn-err btn-sm" onclick="confirmDel('+p.id+',\'prop\')">🗑️</button>'+
+    '</div></td></tr>';
+  }).join('');
+}
+
+function renderAdmProps(){
+  var tb = document.getElementById('adm-props-body');
+  if(!tb) return;
+  tb.innerHTML = PROPS.map(function(p){
+    return '<tr><td>#'+p.id+'</td><td><strong>'+p.title+'</strong></td><td>'+capFirst(p.city)+'</td>'+
+    '<td>'+typeLabel(p.type)+'</td><td>'+fmtPrice(p.price,p.status)+'</td>'+
+    '<td><span class="badge '+(p.status==='venta'?'badge-sale':'badge-rent')+'">'+(p.status==='venta'?'En Venta':'En Arriendo')+'</span></td>'+
+    '<td><div class="tacts">'+
+      '<button class="btn btn-out btn-sm" onclick="editProp('+p.id+')">✏️ Editar</button>'+
+      '<button class="btn btn-err btn-sm" onclick="confirmDel('+p.id+',\'prop\')">🗑️</button>'+
+    '</div></td></tr>';
+  }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--txt2);padding:30px">No hay propiedades aún</td></tr>';
+}
+
+function renderAdmUsers(){
+  var tb = document.getElementById('users-body');
+  if(!tb) return;
+  tb.innerHTML = USERS.map(function(u){
+    var roleCls = u.role==='admin'?'role-admin':'role-agent';
+    var roleTxt = u.role==='admin'?'Administrador':u.role==='agent'?'Agente':'Visitante';
+    var isMe = AUTH.user && AUTH.user.id===u.id;
+    return '<tr><td><strong>'+u.name+'</strong>'+(isMe?' <span style="font-size:11px;color:var(--txt3)">(tú)</span>':'')+'</td>'+
+    '<td>'+u.email+'</td>'+
+    '<td><span class="badge '+roleCls+'">'+roleTxt+'</span></td>'+
+    '<td><span class="badge '+(u.active?'status-ok':'status-off')+'">'+(u.active?'Activo':'Inactivo')+'</span></td>'+
+    '<td><div class="tacts">'+
+      '<button class="btn btn-ghost btn-sm" onclick="togUser('+u.id+')">'+(u.active?'🔒 Desactivar':'🔓 Activar')+'</button>'+
+      (!isMe?'<button class="btn btn-err btn-sm" onclick="confirmDel('+u.id+',\'user\')">🗑️</button>':'')+
+    '</div></td></tr>';
+  }).join('');
+}
+
+// ── USUARIOS ──
+function saveUser(){
+  var name=document.getElementById('u-name').value.trim();
+  var email=document.getElementById('u-email').value.trim().toLowerCase();
+  var pw=document.getElementById('u-pw').value;
+  var role=document.getElementById('u-role').value;
+  if(!name||!email||!pw){ showToast('Completa todos los campos','err'); return; }
+  if(USERS.find(function(u){ return u.email.toLowerCase()===email; })){
+    showToast('Ese email ya está registrado','err'); return;
+  }
+  USERS.push({id:Date.now(),name:name,email:email,password:pw,role:role,active:true});
+  saveUsers(); renderAdmUsers(); closeModal('mod-user');
+  showToast('✅ Usuario creado','ok');
+  ['u-name','u-email','u-pw'].forEach(function(id){ document.getElementById(id).value=''; });
+}
+
+function togUser(id){
+  var u=USERS.find(function(x){ return x.id===id; });
+  if(!u) return;
+  if(u.id===AUTH.user?.id){ showToast('No puedes desactivarte a ti mismo','err'); return; }
+  u.active=!u.active; saveUsers(); renderAdmUsers();
+  showToast(u.active?'✅ Usuario activado':'🔒 Usuario desactivado','ok');
+}
+
+// ── ELIMINAR ──
+var DEL_TARGET=null;
+function confirmDel(id,type){
+  DEL_TARGET={id:id,type:type};
+  var msg=document.getElementById('del-msg');
+  if(msg) msg.textContent=type==='prop'?'¿Eliminar esta propiedad? No se puede deshacer.':'¿Eliminar este usuario? No se puede deshacer.';
+  var btn=document.getElementById('del-confirm-btn');
+  if(btn) btn.onclick=doDel;
+  openModal('mod-del');
+}
+function doDel(){
+  if(!DEL_TARGET) return;
+  if(DEL_TARGET.type==='prop'){
+    PROPS=PROPS.filter(function(p){ return p.id!==DEL_TARGET.id; });
+    saveProps(); renderAdmProps(); renderAdmDash(); renderFeat();
+    document.getElementById('hstat-props').textContent=PROPS.length;
+    showToast('🗑️ Propiedad eliminada','ok');
+  } else {
+    USERS=USERS.filter(function(u){ return u.id!==DEL_TARGET.id; });
+    saveUsers(); renderAdmUsers();
+    showToast('🗑️ Usuario eliminado','ok');
+  }
+  closeModal('mod-del'); DEL_TARGET=null;
+}
+
+// ── MODALES ──
+function openModal(id){ document.getElementById(id).classList.add('on'); }
+function closeModal(id){ document.getElementById(id).classList.remove('on'); }
+document.addEventListener('click',function(e){ if(e.target.classList.contains('modal-bg')) e.target.classList.remove('on'); });
+
+// ── TOAST ──
+var toastTmr;
+function showToast(msg,type){
+  var old=document.querySelector('.toast'); if(old) old.remove();
+  var t=document.createElement('div');
+  t.className='toast'+(type?' '+type:'');
+  t.textContent=msg;
+  document.body.appendChild(t);
+  clearTimeout(toastTmr);
+  toastTmr=setTimeout(function(){ t.remove(); },3500);
+}
+
+// ── CONTACTO ──
+function sendContact(){
+  var n=document.getElementById('cn').value.trim();
+  var e=document.getElementById('ce').value.trim();
+  if(!n||!e){ showToast('Completa nombre y email','err'); return; }
+  showToast('📨 Mensaje enviado. Te contactaremos pronto.','ok');
+  ['cn','ce','cp','cm'].forEach(function(id){ document.getElementById(id).value=''; });
+}
+
+// ── IDIOMAS ──
+var LANG={
+  es:{
+    hb:'#1 Plataforma Inmobiliaria',ht:'Encuentra la propiedad de tus <span>sueños</span>',
+    hs:'Más de 500 propiedades verificadas. Compra, vende o arrienda con total confianza.',
+    hl1:'Propiedades',hl2:'Ciudades',hl3:'Clientes felices',hl4:'Satisfacción',
+    ft:'Propiedades Destacadas',fs:'Las mejores oportunidades, seleccionadas para ti.',
+    fall:'Ver todas →',wt:'¿Por qué elegirnos?',ws:'Más de 10 años de experiencia inmobiliaria.',
+    w1t:'100% Seguro',w1s:'Propiedades verificadas y contratos revisados por expertos.',
+    w2t:'Mejores Precios',w2s:'Negociamos directamente con propietarios para ti.',
+    w3t:'Proceso Rápido',w3s:'Te acompañamos en cada paso hasta el contrato.',
+    w4t:'Cobertura Nacional',w4s:'Presencia en más de 12 ciudades con agentes locales.',
+    fa:'Tu plataforma inmobiliaria de confianza.',fl:'Enlaces',fty:'Tipos',fc:'Contacto',fr:'Todos los derechos reservados',fsec:'🔒 Plataforma segura',
+    pt:'Todas las Propiedades',lc:'Ciudad',lt:'Tipo',ls:'Estado',lr:'Habitaciones',lp:'Precio máx.',
+    bwa:'WhatsApp',bcall:'Llamar ahora',bform:'Enviar formulario',bsend:'Enviar',bback:'Volver',
+    bsearch:'Buscar',batxt:'Ver todas →',
+    at:'Sobre InmoElite',as:'Más de 10 años conectando personas con sus propiedades ideales.',
+    ap1:'InmoElite nació con la misión de simplificar el proceso de compra, venta y arriendo de propiedades en América Latina y España.',
+    ap2:'Nuestro equipo de agentes certificados trabaja para ofrecerte las mejores opciones con total transparencia.',
+    ct:'Contáctanos',cs:'Estamos aquí para ayudarte a encontrar tu propiedad ideal.',
+    cft:'Envíanos un mensaje',ln:'Nombre completo',lph:'Teléfono',lmsg:'Mensaje',
+    desch:'Descripción',amh:'Características',agrole:'Agente Inmobiliario',
+  },
+  en:{
+    hb:'#1 Real Estate Platform',ht:'Find your dream <span>property</span>',
+    hs:'Over 500 verified properties. Buy, sell or rent with total confidence.',
+    hl1:'Properties',hl2:'Cities',hl3:'Happy clients',hl4:'Satisfaction',
+    ft:'Featured Properties',fs:'The best market opportunities, selected for you.',
+    fall:'View all →',wt:'Why choose us?',ws:'Over 10 years of real estate experience.',
+    w1t:'100% Safe',w1s:'Verified properties and contracts reviewed by experts.',
+    w2t:'Best Prices',w2s:'We negotiate directly with owners for you.',
+    w3t:'Fast Process',w3s:'We guide you every step to the contract.',
+    w4t:'National Coverage',w4s:'Present in 12+ cities with local agents.',
+    fa:'Your trusted real estate platform.',fl:'Links',fty:'Types',fc:'Contact',fr:'All rights reserved',fsec:'🔒 Secure platform',
+    pt:'All Properties',lc:'City',lt:'Type',ls:'Status',lr:'Bedrooms',lp:'Max price',
+    bwa:'WhatsApp',bcall:'Call now',bform:'Send form',bsend:'Send',bback:'Back',
+    bsearch:'Search',batxt:'View all →',
+    at:'About InmoElite',as:'Over 10 years connecting people with their ideal properties.',
+    ap1:'InmoElite was born to simplify the process of buying, selling and renting properties.',
+    ap2:'Our team of certified agents works tirelessly to offer you the best options.',
+    ct:'Contact Us',cs:'We are here to help you find your ideal property.',
+    cft:'Send us a message',ln:'Full name',lph:'Phone',lmsg:'Message',
+    desch:'Description',amh:'Amenities',agrole:'Real Estate Agent',
+  },
+  fr:{
+    hb:'#1 Plateforme Immobilière',ht:'Trouvez la propriété de vos <span>rêves</span>',
+    hs:'Plus de 500 propriétés vérifiées. Achetez, vendez ou louez en toute confiance.',
+    hl1:'Propriétés',hl2:'Villes',hl3:'Clients satisfaits',hl4:'Satisfaction',
+    ft:'Propriétés en Vedette',fs:'Les meilleures opportunités, sélectionnées pour vous.',
+    fall:'Voir tout →',wt:'Pourquoi nous choisir?',ws:"Plus de 10 ans d'expérience.",
+    w1t:'100% Sûr',w1s:'Propriétés vérifiées et contrats examinés par des experts.',
+    w2t:'Meilleurs Prix',w2s:'Nous négocions directement avec les propriétaires.',
+    w3t:'Processus Rapide',w3s:"Nous vous accompagnons à chaque étape jusqu'au contrat.",
+    w4t:'Couverture Nationale',w4s:'Présence dans 12+ villes avec agents locaux.',
+    fa:'Votre plateforme immobilière de confiance.',fl:'Liens',fty:'Types',fc:'Contact',fr:'Tous droits réservés',fsec:'🔒 Plateforme sécurisée',
+    pt:'Toutes les Propriétés',lc:'Ville',lt:'Type',ls:'Statut',lr:'Chambres',lp:'Prix max.',
+    bwa:'WhatsApp',bcall:'Appeler',bform:'Envoyer formulaire',bsend:'Envoyer',bback:'Retour',
+    bsearch:'Rechercher',batxt:'Voir tout →',
+    at:"À propos d'InmoElite",as:'Plus de 10 ans à connecter les personnes avec leurs propriétés.',
+    ap1:"InmoElite est né pour simplifier l'achat, la vente et la location de propriétés.",
+    ap2:'Notre équipe travaille pour vous offrir les meilleures options.',
+    ct:'Contactez-nous',cs:'Nous sommes là pour vous aider.',
+    cft:'Envoyez-nous un message',ln:'Nom complet',lph:'Téléphone',lmsg:'Message',
+    desch:'Description',amh:'Caractéristiques',agrole:'Agent Immobilier',
+  },
+  pt:{
+    hb:'#1 Plataforma Imobiliária',ht:'Encontre o imóvel dos seus <span>sonhos</span>',
+    hs:'Mais de 500 imóveis verificados. Compre, venda ou alugue com total confiança.',
+    hl1:'Imóveis',hl2:'Cidades',hl3:'Clientes satisfeitos',hl4:'Satisfação',
+    ft:'Imóveis em Destaque',fs:'As melhores oportunidades, selecionadas para você.',
+    fall:'Ver todos →',wt:'Por que nos escolher?',ws:'Mais de 10 anos de experiência.',
+    w1t:'100% Seguro',w1s:'Imóveis verificados e contratos revisados por especialistas.',
+    w2t:'Melhores Preços',w2s:'Negociamos diretamente com proprietários para você.',
+    w3t:'Processo Rápido',w3s:'Acompanhamos você em cada etapa até o contrato.',
+    w4t:'Cobertura Nacional',w4s:'Presença em 12+ cidades com agentes locais.',
+    fa:'Sua plataforma imobiliária de confiança.',fl:'Links',fty:'Tipos',fc:'Contato',fr:'Todos os direitos reservados',fsec:'🔒 Plataforma segura',
+    pt:'Todos os Imóveis',lc:'Cidade',lt:'Tipo',ls:'Status',lr:'Quartos',lp:'Preço máx.',
+    bwa:'WhatsApp',bcall:'Ligar agora',bform:'Enviar formulário',bsend:'Enviar',bback:'Voltar',
+    bsearch:'Buscar',batxt:'Ver todos →',
+    at:'Sobre InmoElite',as:'Mais de 10 anos conectando pessoas com seus imóveis ideais.',
+    ap1:'InmoElite nasceu para simplificar a compra, venda e aluguel de imóveis.',
+    ap2:'Nossa equipe trabalha para oferecer as melhores opções com transparência.',
+    ct:'Entre em Contato',cs:'Estamos aqui para ajudá-lo.',
+    cft:'Envie-nos uma mensagem',ln:'Nome completo',lph:'Telefone',lmsg:'Mensagem',
+    desch:'Descrição',amh:'Características',agrole:'Agente Imobiliário',
+  }
+};
+var curLang='es';
+
+function setLang(l){
+  if(!LANG[l]) return;
+  curLang=l;
+  localStorage.setItem('re_lang',l);
+  // Update flag buttons
+  document.querySelectorAll('.flag').forEach(function(b){ b.classList.remove('on'); });
+  var fl=document.getElementById('fl-'+l); if(fl) fl.classList.add('on');
+  var L=LANG[l];
+  // Apply translations
+  var ids={
+    'hb-txt':L.hb,'h-title':L.ht,'h-sub':L.hs,
+    'hstat-l1':L.hl1,'hstat-l2':L.hl2,'hstat-l3':L.hl3,'hstat-l4':L.hl4,
+    'feat-title':L.ft,'feat-sub':L.fs,'btn-all-txt':L.fall,
+    'why-title':L.wt,'why-sub':L.ws,
+    'w1t':L.w1t,'w1s':L.w1s,'w2t':L.w2t,'w2s':L.w2s,'w3t':L.w3t,'w3s':L.w3s,'w4t':L.w4t,'w4s':L.w4s,
+    'f-about':L.fa,'f-links':L.fl,'f-types':L.fty,'f-contact':L.fc,'f-rights':L.fr,'f-secure':L.fsec,
+    'props-title':L.pt,
+    'lbl-city':L.lc,'lbl-type':L.lt,'lbl-status':L.ls,'lbl-rooms':L.lr,'lbl-price':L.lp,
+    'btn-wa-txt':L.bwa,'btn-call-txt':L.bcall,'btn-form-txt':L.bform,
+    'btn-send2-txt':L.bsend,'btn-back-txt':L.bback,'btn-search-txt':L.bsearch,
+    'about-title':L.at,'about-sub':L.as,'about-p1':L.ap1,'about-p2':L.ap2,
+    'contact-title':L.ct,'contact-sub':L.cs,'contact-form-t':L.cft,
+    'lbl-name':L.ln,'lbl-phone':L.lph,'lbl-msg':L.lmsg,
+    'btn-send-txt':L.bsend,'det-desc-h':L.desch,'det-am-h':L.amh,'det-agrole':L.agrole,
+    'cform-t':L.cft,
+  };
+  Object.keys(ids).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.innerHTML=ids[id];
+  });
+  renderFeat();
+  if(curPage==='props') renderAllProps(PROPS);
+  document.documentElement.lang=l;
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',function(){
+  // Restore lang
+  curLang=localStorage.getItem('re_lang')||'es';
+  if(LANG[curLang]){
+    var fl=document.getElementById('fl-'+curLang);
+    document.querySelectorAll('.flag').forEach(function(b){ b.classList.remove('on'); });
+    if(fl) fl.classList.add('on');
+    setLang(curLang);
+  }
+
+  // Enter key login
+  document.getElementById('lpw').addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); });
+  document.getElementById('lemail').addEventListener('keydown',function(e){ if(e.key==='Enter') document.getElementById('lpw').focus(); });
+
+  // Restore session or show login
+  if(tryRestore()){
+    enterApp();
+  } else {
+    // Show only login
+    hideAll();
+    var login=document.getElementById('pg-login');
+    login.style.display='flex';
+    login.classList.add('on');
+  }
+});
+</script>
+</body>
+</html>
